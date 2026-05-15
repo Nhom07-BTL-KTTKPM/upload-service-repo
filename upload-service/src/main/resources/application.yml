@@ -1,0 +1,73 @@
+spring:
+  config:
+    import: optional:file:.env[.properties]
+  application:
+    name: upload-service
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO}
+    open-in-view: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+
+server:
+  port: ${SERVER_PORT}
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: ${EUREKA_DEFAULT_ZONE}
+  instance:
+    prefer-ip-address: ${EUREKA_INSTANCE_PREFER_IP_ADDRESS}
+    ip-address: ${EUREKA_INSTANCE_IP_ADDRESS}
+    hostname: ${EUREKA_INSTANCE_HOSTNAME}
+
+auth:
+  jwt:
+    issuer: ${AUTH_JWT_ISSUER}
+    secret: ${AUTH_JWT_SECRET}
+
+aws:
+  s3:
+    region: ${AWS_REGION:ap-southeast-1}
+    bucket-name: ${AWS_S3_BUCKET_NAME}
+    public-base-url: ${AWS_S3_PUBLIC_BASE_URL:}
+    force-path-style: ${AWS_S3_FORCE_PATH_STYLE:false}
+  credentials:
+    access-key-id: ${AWS_ACCESS_KEY_ID}
+    secret-access-key: ${AWS_SECRET_ACCESS_KEY}
+
+upload:
+  s3:
+    prefixes:
+      avatar: ${AWS_S3_AVATAR_PREFIX:avatars}
+      comment: ${AWS_S3_COMMENT_PREFIX:comments}
+      product: ${AWS_S3_PRODUCT_PREFIX:products}
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      default:
+        slidingWindowType: COUNT_BASED
+        slidingWindowSize: 10
+        failureRateThreshold: 50
+        waitDurationInOpenState: 30s
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
